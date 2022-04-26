@@ -1,0 +1,27 @@
+{
+  "name": "@kermage/cardano-wallet-browser-extensions-interface",
+  "version": "0.1.0",
+  "description": "Helper library to interact with Cardano Wallets",
+  "keywords": [
+    "cardano",
+    "dApp"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "Gene Alyson Fortunado Torcende",
+    "email": "genealyson.torcende@gmail.com"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kermage/cardano-wallet-browser-extensions-interface.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.17.9",
+    "@emurgo/cardano-serialization-lib-browser": "9.1.2",
+    "buffer": "^6.0.3"
+  }
+}
