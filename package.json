@@ -1,5 +1,5 @@
 {
-  "name": "@kermage/cardano-wallet-browser-extensions-interface",
+  "name": "@pbwebdev/cardano-wallet-browser-extensions-interface",
   "version": "0.1.0",
   "description": "Helper library to interact with Cardano Wallets",
   "keywords": [
@@ -9,15 +9,13 @@
   "license": "MIT",
   "author": {
     "name": "Gene Alyson Fortunado Torcende",
-    "email": "genealyson.torcende@gmail.com"
+    "email": "mail@pbwebdev.com",
+    "homepage": "https://pbwebdev.com"
   },
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kermage/cardano-wallet-browser-extensions-interface.git"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "url": "https://github.com/pbwebdev/cardano-wallet-browser-extensions-interface.git"
   },
   "dependencies": {
     "@babel/runtime": "^7.17.9",
