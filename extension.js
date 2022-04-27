@@ -1,6 +1,7 @@
 import { NETWORK } from './config'
 import { hexToBech32, hexToBytes } from './utils'
 import * as CSL from '@emurgo/cardano-serialization-lib-browser'
+import { buildTx, prepareTx } from './wallet'
 
 class Extension {
     constructor(type, cardano) {
@@ -91,6 +92,103 @@ class Extension {
             return await this.cardano.submitTx(hexToBytes(signedTx.to_bytes()).toString('hex'))
         } catch (error) {
             throw error.info
+        }
+    }
+
+    payTo = async (address, amount, protocolParameters = null) => {
+        if ('Typhon' === this.type) {
+            const { status, data, error, reason } = await this.cardano.paymentTransaction({
+                outputs: [{
+                    address,
+                    amount,
+                }],
+            })
+
+            if (status) {
+                return data.transactionId
+            }
+
+            throw error ?? reason
+        }
+
+        if (!protocolParameters) {
+            throw 'Required protocol parameters'
+        }
+
+        try {
+            const changeAddress = await this.getChangeAddress()
+            const utxos = await this.getUtxos()
+            const outputs = await prepareTx(amount, address)
+            const transaction = await buildTx(changeAddress, utxos, outputs, protocolParameters)
+
+            return await this.signAndSubmit(transaction)
+        } catch (error) {
+            throw error
+        }
+    }
+
+    delegateTo = async (poolId, protocolParameters = null, accountInformation = null) => {
+        if ('Typhon' === this.type) {
+            const { status, data, error, reason } = await this.cardano.delegationTransaction({
+                poolId,
+            })
+
+            if (status) {
+                return data.transactionId
+            }
+
+            throw error ?? reason
+        }
+
+        if (!protocolParameters) {
+            throw 'Required protocol parameters'
+        }
+
+        if (!accountInformation) {
+            throw 'Required account information'
+        }
+
+        try {
+            const changeAddress = await this.getChangeAddress()
+            const utxos = await this.getUtxos()
+            const outputs = await prepareTx(protocolParameters.keyDeposit, changeAddress)
+            const stakeKeyHash = await this.getStakeKeyHash()
+            const certificates = CSL.Certificates.new()
+
+            if (!accountInformation.active) {
+                certificates.add(
+                    CSL.Certificate.new_stake_registration(
+                        CSL.StakeRegistration.new(
+                            CSL.StakeCredential.from_keyhash(
+                                CSL.Ed25519KeyHash.from_bytes(
+                                    hexToBytes(stakeKeyHash)
+                                )
+                            )
+                        )
+                    )
+                )
+            }
+
+            certificates.add(
+                CSL.Certificate.new_stake_delegation(
+                    CSL.StakeDelegation.new(
+                        CSL.StakeCredential.from_keyhash(
+                            CSL.Ed25519KeyHash.from_bytes(
+                                hexToBytes(stakeKeyHash)
+                            )
+                        ),
+                        CSL.Ed25519KeyHash.from_bytes(
+                            hexToBytes(poolId)
+                        )
+                    )
+                )
+            )
+
+            const transaction = await buildTx(changeAddress, utxos, outputs, protocolParameters, certificates)
+
+            return await this.signAndSubmit(transaction)
+        } catch (error) {
+            throw error
         }
     }
 }
