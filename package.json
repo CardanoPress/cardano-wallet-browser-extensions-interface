@@ -1,6 +1,6 @@
 {
   "name": "@pbwebdev/cardano-wallet-browser-extensions-interface",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Helper library to interact with Cardano Wallets",
   "keywords": [
     "cardano",
