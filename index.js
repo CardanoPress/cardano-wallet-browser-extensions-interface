@@ -1,4 +1,4 @@
-import { supportedWallets, browser, toPropertyName } from './config'
+import { supportedWallets } from './config'
 import Extension from './extension'
 import * as CSL from '@emurgo/cardano-serialization-lib-browser'
 
@@ -17,17 +17,31 @@ const getWalletApi = async (namespace) => {
 }
 
 class Extensions {
+    static supported = supportedWallets
+
+    static isSupported(type) {
+        return supportedWallets.includes(type)
+    }
+
+    static hasWallet(type) {
+        if (! this.isSupported(type)) {
+            return false;
+        }
+
+        return !!window.cardano?.[type.toLowerCase()]
+    }
+
     static async getWallet(type) {
-        if (!supportedWallets.includes(type)) {
+        if (! this.isSupported(type)) {
             throw `Not supported wallet "${type}"`
+        }
+
+        if (! this.hasWallet(type)) {
+            throw `Not available wallet "${type}"`
         }
 
         const namespace = type.toLowerCase()
         const object = `${namespace}Object`
-
-        if (!browser[toPropertyName(type, 'has')]) {
-            throw `Not available wallet "${type}"`
-        }
 
         if (undefined === this[object]) {
             try {

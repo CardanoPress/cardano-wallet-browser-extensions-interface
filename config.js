@@ -17,10 +17,3 @@ export const supportedWallets = Object.freeze([
     'Typhon',
     'GeroWallet',
 ])
-
-export const toPropertyName = (string, prefix = '', suffix = '') => prefix + string.charAt(0).toUpperCase() + string.slice(1) + suffix
-
-export const browser = Object.freeze(supportedWallets.reduce((a, v) => ({
-    ...a,
-    [toPropertyName(v, 'has')]: () => !!window.cardano?.[v.toLowerCase()],
-}), {}))
