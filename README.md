@@ -9,7 +9,7 @@ A helper javascript library/package to interact with Cardano Wallets
 ## Supported Wallets
 
 - Nami
-- ccvault
+- Eternl `ccvault`
 - Yoroi
 - Flint
 - Typhon

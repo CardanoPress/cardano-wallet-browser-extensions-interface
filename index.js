@@ -20,10 +20,18 @@ class Extensions {
     static supported = supportedWallets
 
     static isSupported(type) {
+        if ('ccvault' === type) {
+            type = 'Eternl'
+        }
+
         return supportedWallets.includes(type)
     }
 
     static hasWallet(type) {
+        if ('ccvault' === type) {
+            type = 'Eternl'
+        }
+
         if (! this.isSupported(type)) {
             return false;
         }

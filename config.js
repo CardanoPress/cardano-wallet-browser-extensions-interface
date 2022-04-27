@@ -11,7 +11,7 @@ export const TX = {
 
 export const supportedWallets = Object.freeze([
     'Nami',
-    'ccvault',
+    'Eternl', // ccvault
     'Yoroi',
     'Flint',
     'Typhon',
