@@ -38,8 +38,8 @@ export const buildTx = async (changeAddress, utxos, outputs, protocolParameters,
     const totalAssets = await multiAssetCount(outputs.get(0).amount().multiasset())
     CoinSelection.setProtocolParameters(
         protocolParameters.minUtxo,
-        protocolParameters.linearFee.minFeeA.toString(),
-        protocolParameters.linearFee.minFeeB.toString(),
+        protocolParameters.minFeeA.toString(),
+        protocolParameters.minFeeB.toString(),
         protocolParameters.maxTxSize.toString()
     )
 
@@ -55,8 +55,8 @@ export const buildTx = async (changeAddress, utxos, outputs, protocolParameters,
 
     const txBuilder = CSL.TransactionBuilder.new(
         CSL.LinearFee.new(
-            CSL.BigNum.from_str(protocolParameters.linearFee.minFeeA.toString()),
-            CSL.BigNum.from_str(protocolParameters.linearFee.minFeeB.toString())
+            CSL.BigNum.from_str(protocolParameters.minFeeA.toString()),
+            CSL.BigNum.from_str(protocolParameters.minFeeB.toString())
         ),
         CSL.BigNum.from_str(protocolParameters.minUtxo),
         CSL.BigNum.from_str(protocolParameters.poolDeposit),
