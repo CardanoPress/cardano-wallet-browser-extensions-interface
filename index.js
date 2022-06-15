@@ -39,6 +39,18 @@ class Extensions {
         return !!window.cardano?.[type.toLowerCase()]
     }
 
+    static async isEnabled(type) {
+        if ('ccvault' === type) {
+            type = 'Eternl'
+        }
+
+        if (! this.hasWallet(type)) {
+            return false;
+        }
+
+        return window.cardano[type.toLowerCase()].isEnabled()
+    }
+
     static async getWallet(type) {
         if (! this.isSupported(type)) {
             throw `Not supported wallet "${type}"`
@@ -51,7 +63,7 @@ class Extensions {
         const namespace = type.toLowerCase()
         const object = `${namespace}Object`
 
-        if (undefined === this[object]) {
+        if (undefined === this[object] || ! await this.isEnabled()) {
             try {
                 this[object] = new Extension(type, await getWalletApi(namespace))
             } catch (error) {
