@@ -54,6 +54,12 @@ class Extension {
             return response.data
         }
 
+        if ('Cardwallet' === this.type) {
+            const rewardAddress = await this.cardano.getRewardAddress()
+
+            return hexToBech32(rewardAddress)
+        }
+
         const rewardAddress = await this.cardano.getRewardAddresses()
 
         return hexToBech32(rewardAddress[0])
