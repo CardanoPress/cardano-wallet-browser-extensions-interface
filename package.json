@@ -21,5 +21,12 @@
     "@babel/runtime": "^7.17.9",
     "@emurgo/cardano-serialization-lib-browser": "9.1.2",
     "buffer": "^6.0.3"
+  },
+  "scripts": {
+    "watch": "tsc --watch",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
   }
 }
