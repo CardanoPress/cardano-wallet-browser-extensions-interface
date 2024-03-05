@@ -1,8 +1,9 @@
 import { TX } from './config'
 import CoinSelection from './lib/coinSelection'
-import * as CSL from '@emurgo/cardano-serialization-lib-browser'
+import CSL from './csl'
+import type CSLType from '@emurgo/cardano-serialization-lib-browser';
 
-const multiAssetCount = async (multiAsset: CSL.MultiAsset) => {
+const multiAssetCount = async (multiAsset: CSLType.MultiAsset) => {
     if (!multiAsset) return 0
     let count = 0
     const policies = multiAsset.keys()
@@ -18,19 +19,20 @@ const multiAssetCount = async (multiAsset: CSL.MultiAsset) => {
 }
 
 export const prepareTx = async (lovelaceValue: string, paymentAddress: string) => {
-    const outputs = CSL.TransactionOutputs.new()
+    await CSL.load()
+    const outputs = CSL.Module.TransactionOutputs.new()
 
     outputs.add(
-        CSL.TransactionOutput.new(
-            CSL.Address.from_bech32(paymentAddress),
-            CSL.Value.new(CSL.BigNum.from_str(lovelaceValue))
+        CSL.Module.TransactionOutput.new(
+            CSL.Module.Address.from_bech32(paymentAddress),
+            CSL.Module.Value.new(CSL.Module.BigNum.from_str(lovelaceValue))
         )
     )
 
     return outputs
 }
 
-export const buildTx = async (changeAddress: string, utxos: CSL.TransactionUnspentOutput[], outputs: CSL.TransactionOutputs, protocolParameters: any, certificates: CSL.Certificates | null = null) => {
+export const buildTx = async (changeAddress: string, utxos: CSLType.TransactionUnspentOutput[], outputs: CSLType.TransactionOutputs, protocolParameters: any, certificates: CSLType.Certificates | null = null) => {
     const totalAssets = await multiAssetCount(outputs.get(0).amount().multiasset()!)
     CoinSelection.setProtocolParameters(
         protocolParameters.minUtxo,
@@ -40,11 +42,11 @@ export const buildTx = async (changeAddress: string, utxos: CSL.TransactionUnspe
     )
 
     let selection: {
-        input: CSL.TransactionUnspentOutput[];
-        output: CSL.TransactionOutput[];
-        remaining: CSL.TransactionUnspentOutput[];
-        amount: CSL.Value;
-        change: CSL.Value;
+        input: CSLType.TransactionUnspentOutput[];
+        output: CSLType.TransactionOutput[];
+        remaining: CSLType.TransactionUnspentOutput[];
+        amount: CSLType.Value;
+        change: CSLType.Value;
     }
 
     try {
@@ -55,14 +57,15 @@ export const buildTx = async (changeAddress: string, utxos: CSL.TransactionUnspe
 
     const inputs = selection.input
 
-    const txBuilder = CSL.TransactionBuilder.new(
-        CSL.LinearFee.new(
-            CSL.BigNum.from_str(protocolParameters.minFeeA.toString()),
-            CSL.BigNum.from_str(protocolParameters.minFeeB.toString())
+    await CSL.load()
+    const txBuilder = CSL.Module.TransactionBuilder.new(
+        CSL.Module.LinearFee.new(
+            CSL.Module.BigNum.from_str(protocolParameters.minFeeA.toString()),
+            CSL.Module.BigNum.from_str(protocolParameters.minFeeB.toString())
         ),
-        CSL.BigNum.from_str(protocolParameters.minUtxo),
-        CSL.BigNum.from_str(protocolParameters.poolDeposit),
-        CSL.BigNum.from_str(protocolParameters.keyDeposit),
+        CSL.Module.BigNum.from_str(protocolParameters.minUtxo),
+        CSL.Module.BigNum.from_str(protocolParameters.poolDeposit),
+        CSL.Module.BigNum.from_str(protocolParameters.keyDeposit),
         protocolParameters.maxValSize,
         protocolParameters.maxTxSize
     )
@@ -83,24 +86,24 @@ export const buildTx = async (changeAddress: string, utxos: CSL.TransactionUnspe
 
     // check if change value is too big for single output
     if (changeMultiAssets && change.to_bytes().length * 2 > protocolParameters.maxValSize) {
-        const partialChange = CSL.Value.new(CSL.BigNum.from_str('0'))
+        const partialChange = CSL.Module.Value.new(CSL.Module.BigNum.from_str('0'))
 
-        const partialMultiAssets = CSL.MultiAsset.new()
+        const partialMultiAssets = CSL.Module.MultiAsset.new()
         const policies = changeMultiAssets.keys()
         const makeSplit = () => {
             for (let j = 0; j < changeMultiAssets.len(); j++) {
                 const policy = policies.get(j)
                 const policyAssets = changeMultiAssets.get(policy)!
                 const assetNames = policyAssets.keys()
-                const assets = CSL.Assets.new()
+                const assets = CSL.Module.Assets.new()
                 for (let k = 0; k < assetNames.len(); k++) {
                     const policyAsset = assetNames.get(k)
                     const quantity = policyAssets.get(policyAsset)!
                     assets.insert(policyAsset, quantity)
                     //check size
-                    const checkMultiAssets = CSL.MultiAsset.from_bytes(partialMultiAssets.to_bytes())
+                    const checkMultiAssets = CSL.Module.MultiAsset.from_bytes(partialMultiAssets.to_bytes())
                     checkMultiAssets.insert(policy, assets)
-                    const checkValue = CSL.Value.new(CSL.BigNum.from_str('0'))
+                    const checkValue = CSL.Module.Value.new(CSL.Module.BigNum.from_str('0'))
                     checkValue.set_multiasset(checkMultiAssets)
                     if (checkValue.to_bytes().length * 2 >= protocolParameters.maxValSize) {
                         partialMultiAssets.insert(policy, assets)
@@ -112,16 +115,16 @@ export const buildTx = async (changeAddress: string, utxos: CSL.TransactionUnspe
         }
         makeSplit()
         partialChange.set_multiasset(partialMultiAssets)
-        const minAda = CSL.min_ada_required(partialChange, CSL.BigNum.from_str(protocolParameters.minUtxo))
+        const minAda = CSL.Module.min_ada_required(partialChange, CSL.Module.BigNum.from_str(protocolParameters.minUtxo))
         partialChange.set_coin(minAda)
 
-        txBuilder.add_output(CSL.TransactionOutput.new(CSL.Address.from_bech32(changeAddress), partialChange))
+        txBuilder.add_output(CSL.Module.TransactionOutput.new(CSL.Module.Address.from_bech32(changeAddress), partialChange))
     }
 
     txBuilder.set_ttl(protocolParameters.slot + TX.invalid_hereafter)
-    txBuilder.add_change_if_needed(CSL.Address.from_bech32(changeAddress))
+    txBuilder.add_change_if_needed(CSL.Module.Address.from_bech32(changeAddress))
 
-    const transaction = CSL.Transaction.new(txBuilder.build(), CSL.TransactionWitnessSet.new())
+    const transaction = CSL.Module.Transaction.new(txBuilder.build(), CSL.Module.TransactionWitnessSet.new())
 
     const size = transaction.to_bytes().length * 2
     if (size > protocolParameters.maxTxSize) throw TX.too_big

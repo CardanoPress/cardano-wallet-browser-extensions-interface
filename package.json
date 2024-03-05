@@ -21,6 +21,10 @@
           "types": "./dist/index.d.ts",
           "default": "./dist/index.js"
       },
+      "./csl": {
+          "types": "./dist/csl.d.ts",
+          "default": "./dist/csl.js"
+      },
       "./config": {
           "types": "./dist/config.d.ts",
           "default": "./dist/config.js"

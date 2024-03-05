@@ -1,6 +1,6 @@
 import { supportedWallets } from './config'
 import Extension from './extension'
-import * as CSL from '@emurgo/cardano-serialization-lib-browser'
+import CSL from './csl'
 
 interface Cardano {
     enable: () => Promise<any>;
