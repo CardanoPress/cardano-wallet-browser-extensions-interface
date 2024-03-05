@@ -1,5 +1,7 @@
+import type CSLType from '@emurgo/cardano-serialization-lib-browser';
+
 export class CSL {
-    static Module: typeof import('@emurgo/cardano-serialization-lib-browser')
+    static Module: typeof CSLType
 
     static async load() {
         if (undefined === CSL.Module) {
@@ -9,3 +11,4 @@ export class CSL {
 }
 
 export default CSL
+export type { CSLType }

@@ -1,7 +1,6 @@
 import { NETWORK } from './config'
 import { hexToBech32, hexToBytes } from './utils'
-import CSL from './csl'
-import type CSLType from '@emurgo/cardano-serialization-lib-browser';
+import CSL, { CSLType } from './csl'
 import { buildTx, prepareTx } from './wallet'
 
 interface Cardano {
@@ -47,7 +46,7 @@ class Extension {
             const response = await this.cardano.getBalance()
 
             // @ts-ignore
-            return response.data.ada
+            return response.data.ada as string
         }
 
         const balance = await this.cardano.getBalance()
@@ -61,7 +60,7 @@ class Extension {
             const response = await this.cardano.getAddress()
 
             // @ts-ignore
-            return response.data
+            return response.data as string
         }
 
         const changeAddress = await this.cardano.getChangeAddress()
@@ -74,7 +73,7 @@ class Extension {
             const response = await this.cardano.getRewardAddress()
 
             // @ts-ignore
-            return response.data
+            return response.data as string
         }
 
         if ('Cardwallet' === this.type) {
@@ -139,7 +138,7 @@ class Extension {
             })
 
             if (status) {
-                return data.transactionId
+                return data.transactionId as string
             }
 
             throw error ?? reason
@@ -168,7 +167,7 @@ class Extension {
             })
 
             if (status) {
-                return data.transactionId
+                return data.transactionId as string
             }
 
             throw error ?? reason

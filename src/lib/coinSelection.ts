@@ -1,6 +1,6 @@
 // @ts-nocheck
 import * as CSL from '@emurgo/cardano-serialization-lib-browser'
-import { TransactionOutputs, TransactionUnspentOutput, Value } from '@emurgo/cardano-serialization-lib-browser'
+import type { TransactionOutputs, TransactionUnspentOutput, Value } from '@emurgo/cardano-serialization-lib-browser'
 
 /**
  * BerryPool implementation of the __Random-Improve__ coin selection algorithm.

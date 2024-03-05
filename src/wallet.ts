@@ -1,7 +1,6 @@
 import { TX } from './config'
 import CoinSelection from './lib/coinSelection'
-import CSL from './csl'
-import type CSLType from '@emurgo/cardano-serialization-lib-browser';
+import CSL, { CSLType } from './csl'
 
 const multiAssetCount = async (multiAsset: CSLType.MultiAsset) => {
     if (!multiAsset) return 0

@@ -1,43 +1,59 @@
-lockfileVersion: 5.4
+lockfileVersion: '6.0'
 
-specifiers:
-  '@babel/runtime': ^7.17.9
-  '@emurgo/cardano-serialization-lib-browser': 9.1.2
-  buffer: ^6.0.3
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
 
 dependencies:
-  '@babel/runtime': 7.17.9
-  '@emurgo/cardano-serialization-lib-browser': 9.1.2
-  buffer: 6.0.3
+  '@babel/runtime':
+    specifier: ^7.17.9
+    version: 7.17.9
+  '@emurgo/cardano-serialization-lib-browser':
+    specifier: 9.1.2
+    version: 9.1.2
+  buffer:
+    specifier: ^6.0.3
+    version: 6.0.3
+
+devDependencies:
+  typescript:
+    specifier: ^5.3.3
+    version: 5.3.3
 
 packages:
 
-  /@babel/runtime/7.17.9:
+  /@babel/runtime@7.17.9:
     resolution: {integrity: sha512-lSiBBvodq29uShpWGNbgFdKYNiFDo5/HIYsaCEY9ff4sb10x9jizo2+pRrSyF4jKZCXqgzuqBOQKbUm90gQwJg==}
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.13.9
     dev: false
 
-  /@emurgo/cardano-serialization-lib-browser/9.1.2:
+  /@emurgo/cardano-serialization-lib-browser@9.1.2:
     resolution: {integrity: sha512-eQnS0VaRbpgJLCMVLDuYqk1C0mp8TYDptYwaESGk9ZvQxga+Brl4vnlH/XHRjN6HIVm2vNBjujs758dE3uc7cg==}
     dev: false
 
-  /base64-js/1.5.1:
+  /base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
     dev: false
 
-  /buffer/6.0.3:
+  /buffer@6.0.3:
     resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
     dev: false
 
-  /ieee754/1.2.1:
+  /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
     dev: false
 
-  /regenerator-runtime/0.13.9:
+  /regenerator-runtime@0.13.9:
     resolution: {integrity: sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==}
     dev: false
+
+  /typescript@5.3.3:
+    resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: true
