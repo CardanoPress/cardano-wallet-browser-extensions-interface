@@ -2,18 +2,14 @@ import { TX } from './config'
 import CoinSelection from './lib/coinSelection'
 import * as CSL from '@emurgo/cardano-serialization-lib-browser'
 
-/**
- * @param {CSL.MultiAsset} multiAsset
- * @returns
- */
-const multiAssetCount = async (multiAsset) => {
+const multiAssetCount = async (multiAsset: CSL.MultiAsset) => {
     if (!multiAsset) return 0
     let count = 0
     const policies = multiAsset.keys()
     for (let j = 0; j < multiAsset.len(); j++) {
         const policy = policies.get(j)
         const policyAssets = multiAsset.get(policy)
-        const assetNames = policyAssets.keys()
+        const assetNames = policyAssets?.keys()!
         for (let k = 0; k < assetNames.len(); k++) {
             count++
         }
@@ -21,7 +17,7 @@ const multiAssetCount = async (multiAsset) => {
     return count
 }
 
-export const prepareTx = async (lovelaceValue, paymentAddress) => {
+export const prepareTx = async (lovelaceValue: string, paymentAddress: string) => {
     const outputs = CSL.TransactionOutputs.new()
 
     outputs.add(
@@ -34,8 +30,8 @@ export const prepareTx = async (lovelaceValue, paymentAddress) => {
     return outputs
 }
 
-export const buildTx = async (changeAddress, utxos, outputs, protocolParameters, certificates = null) => {
-    const totalAssets = await multiAssetCount(outputs.get(0).amount().multiasset())
+export const buildTx = async (changeAddress: string, utxos: CSL.TransactionUnspentOutput[], outputs: CSL.TransactionOutputs, protocolParameters: any, certificates: CSL.Certificates | null = null) => {
+    const totalAssets = await multiAssetCount(outputs.get(0).amount().multiasset()!)
     CoinSelection.setProtocolParameters(
         protocolParameters.minUtxo,
         protocolParameters.minFeeA.toString(),
@@ -43,7 +39,13 @@ export const buildTx = async (changeAddress, utxos, outputs, protocolParameters,
         protocolParameters.maxTxSize.toString()
     )
 
-    let selection
+    let selection: {
+        input: CSL.TransactionUnspentOutput[];
+        output: CSL.TransactionOutput[];
+        remaining: CSL.TransactionUnspentOutput[];
+        amount: CSL.Value;
+        change: CSL.Value;
+    }
 
     try {
         selection = await CoinSelection.randomImprove(utxos, outputs, 20 + totalAssets)
@@ -88,12 +90,12 @@ export const buildTx = async (changeAddress, utxos, outputs, protocolParameters,
         const makeSplit = () => {
             for (let j = 0; j < changeMultiAssets.len(); j++) {
                 const policy = policies.get(j)
-                const policyAssets = changeMultiAssets.get(policy)
+                const policyAssets = changeMultiAssets.get(policy)!
                 const assetNames = policyAssets.keys()
                 const assets = CSL.Assets.new()
                 for (let k = 0; k < assetNames.len(); k++) {
                     const policyAsset = assetNames.get(k)
-                    const quantity = policyAssets.get(policyAsset)
+                    const quantity = policyAssets.get(policyAsset)!
                     assets.insert(policyAsset, quantity)
                     //check size
                     const checkMultiAssets = CSL.MultiAsset.from_bytes(partialMultiAssets.to_bytes())

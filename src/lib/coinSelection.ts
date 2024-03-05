@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as CSL from '@emurgo/cardano-serialization-lib-browser'
 import { TransactionOutputs, TransactionUnspentOutput, Value } from '@emurgo/cardano-serialization-lib-browser'
 

@@ -3,8 +3,25 @@ import { hexToBech32, hexToBytes } from './utils'
 import * as CSL from '@emurgo/cardano-serialization-lib-browser'
 import { buildTx, prepareTx } from './wallet'
 
+interface Cardano {
+    getNetworkId: () => Promise<keyof typeof NETWORK>;
+    getBalance: () => Promise<string>;
+    getAddress: () => Promise<string>;
+    getChangeAddress: () => Promise<string>;
+    getRewardAddress: () => Promise<string>;
+    getRewardAddresses: () => Promise<string>;
+    getUtxos: () => Promise<string[]>;
+    signTx: (arg: string) => Promise<string>;
+    submitTx: (arg: string) => Promise<string>;
+    paymentTransaction: ({}) => Promise<any>;
+    delegationTransaction: ({}) => Promise<any>;
+}
+
 class Extension {
-    constructor(type, cardano) {
+    type: string;
+    cardano: Cardano;
+
+    constructor(type: string, cardano: Cardano) {
         this.type = type
         this.cardano = cardano
     }
@@ -17,6 +34,7 @@ class Extension {
         let id = await this.cardano.getNetworkId()
 
         if ('Typhon' === this.type) {
+            // @ts-ignore
             id = id.data
         }
 
@@ -27,6 +45,7 @@ class Extension {
         if ('Typhon' === this.type) {
             const response = await this.cardano.getBalance()
 
+            // @ts-ignore
             return response.data.ada
         }
 
@@ -39,6 +58,7 @@ class Extension {
         if ('Typhon' === this.type) {
             const response = await this.cardano.getAddress()
 
+            // @ts-ignore
             return response.data
         }
 
@@ -51,6 +71,7 @@ class Extension {
         if ('Typhon' === this.type) {
             const response = await this.cardano.getRewardAddress()
 
+            // @ts-ignore
             return response.data
         }
 
@@ -80,10 +101,10 @@ class Extension {
 
         return CSL.RewardAddress.from_address(
             CSL.Address.from_bech32(rewardAddress)
-        ).payment_cred().to_keyhash().to_bytes()
+        )?.payment_cred()?.to_keyhash()?.to_bytes()!
     }
 
-    signAndSubmit = async (transaction) => {
+    signAndSubmit = async (transaction: CSL.Transaction) => {
         if ('Typhon' === this.type) {
             throw 'No implementation from the extension'
         }
@@ -96,12 +117,12 @@ class Extension {
             )
 
             return await this.cardano.submitTx(hexToBytes(signedTx.to_bytes()).toString('hex'))
-        } catch (error) {
+        } catch (error: any) {
             throw error.info
         }
     }
 
-    payTo = async (address, amount, protocolParameters = null) => {
+    payTo = async (address: string, amount: string, protocolParameters = null) => {
         if ('Typhon' === this.type) {
             const { status, data, error, reason } = await this.cardano.paymentTransaction({
                 outputs: [{
@@ -133,7 +154,7 @@ class Extension {
         }
     }
 
-    delegateTo = async (poolId, protocolParameters = null, accountInformation = null) => {
+    delegateTo = async (poolId: string, protocolParameters: any = null, accountInformation: any = null) => {
         if ('Typhon' === this.type) {
             const { status, data, error, reason } = await this.cardano.delegationTransaction({
                 poolId,
