@@ -13,6 +13,31 @@
     "homepage": "https://pbwebdev.com"
   },
   "main": "index.js",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+      ".": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.js"
+      },
+      "./config": {
+          "types": "./dist/config.d.ts",
+          "default": "./dist/config.js"
+      },
+      "./extension": {
+          "types": "./dist/extension.d.ts",
+          "default": "./dist/extension.js"
+      },
+      "./utils": {
+          "types": "./dist/utils.d.ts",
+          "default": "./dist/utils.js"
+      },
+      "./wallet": {
+          "types": "./dist/wallet.d.ts",
+          "default": "./dist/wallet.js"
+      }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/pbwebdev/cardano-wallet-browser-extensions-interface.git"
@@ -23,6 +48,7 @@
     "buffer": "^6.0.3"
   },
   "scripts": {
+    "prepublishOnly": "npm run build",
     "watch": "tsc --watch",
     "build": "tsc"
   },
