@@ -1,6 +1,6 @@
 {
   "name": "@pbwebdev/cardano-wallet-browser-extensions-interface",
-  "version": "0.6.0",
+  "version": "1.0.0",
   "description": "Helper library to interact with Cardano Wallets",
   "keywords": [
     "cardano",
@@ -17,42 +17,42 @@
     "dist"
   ],
   "exports": {
-      ".": {
-          "types": "./dist/index.d.ts",
-          "default": "./dist/index.js"
-      },
-      "./csl": {
-          "types": "./dist/csl.d.ts",
-          "default": "./dist/csl.js"
-      },
-      "./buffer": {
-          "types": "./dist/buffer.d.ts",
-          "default": "./dist/buffer.js"
-      },
-      "./config": {
-          "types": "./dist/config.d.ts",
-          "default": "./dist/config.js"
-      },
-      "./extension": {
-          "types": "./dist/extension.d.ts",
-          "default": "./dist/extension.js"
-      },
-      "./utils": {
-          "types": "./dist/utils.d.ts",
-          "default": "./dist/utils.js"
-      },
-      "./wallet": {
-          "types": "./dist/wallet.d.ts",
-          "default": "./dist/wallet.js"
-      }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./csl": {
+      "types": "./dist/csl.d.ts",
+      "default": "./dist/csl.js"
+    },
+    "./buffer": {
+      "types": "./dist/buffer.d.ts",
+      "default": "./dist/buffer.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "default": "./dist/config.js"
+    },
+    "./extension": {
+      "types": "./dist/extension.d.ts",
+      "default": "./dist/extension.js"
+    },
+    "./utils": {
+      "types": "./dist/utils.d.ts",
+      "default": "./dist/utils.js"
+    },
+    "./wallet": {
+      "types": "./dist/wallet.d.ts",
+      "default": "./dist/wallet.js"
+    }
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/pbwebdev/cardano-wallet-browser-extensions-interface.git"
   },
   "dependencies": {
-    "@babel/runtime": "^7.17.9",
-    "@emurgo/cardano-serialization-lib-browser": "9.1.2",
+    "@babel/runtime": "^7.24.0",
+    "@emurgo/cardano-serialization-lib-browser": "^9.1.4",
     "buffer": "^6.0.3"
   },
   "scripts": {
