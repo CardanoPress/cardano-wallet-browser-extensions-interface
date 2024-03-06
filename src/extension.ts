@@ -1,5 +1,6 @@
 import { NETWORK } from './config'
-import { hexToBech32, hexToBytes } from './utils'
+import { hexToBech32 } from './utils'
+import Buffer, { BufferType } from './buffer'
 import CSL, { CSLType } from './csl'
 import { buildTx, prepareTx } from './wallet'
 
@@ -50,9 +51,10 @@ class Extension {
         }
 
         const balance = await this.cardano.getBalance()
-        await CSL.load()
+        const CSLModule = await CSL.load()
+        const BufferModule = await Buffer.load()
 
-        return CSL.Module.Value.from_bytes(hexToBytes(balance)).coin().to_str()
+        return CSLModule.Value.from_bytes(BufferModule.from(balance, 'hex')).coin().to_str()
     }
 
     getChangeAddress = async () => {
@@ -93,17 +95,18 @@ class Extension {
         }
 
         const rawUtxos = await this.cardano.getUtxos()
-        await CSL.load()
+        const CSLModule = await CSL.load()
+        const BufferModule = await Buffer.load()
 
-        return rawUtxos.map((utxo) => CSL.Module.TransactionUnspentOutput.from_bytes(hexToBytes(utxo)))
+        return rawUtxos.map((utxo) => CSLModule.TransactionUnspentOutput.from_bytes(BufferModule.from(utxo, 'hex')))
     }
 
     getStakeKeyHash = async () => {
         const rewardAddress = await this.getRewardAddress()
-        await CSL.load()
+        const CSLModule = await CSL.load()
 
-        return CSL.Module.RewardAddress.from_address(
-            CSL.Module.Address.from_bech32(rewardAddress)
+        return CSLModule.RewardAddress.from_address(
+            CSLModule.Address.from_bech32(rewardAddress)
         )?.payment_cred()?.to_keyhash()?.to_bytes()!
     }
 
@@ -113,15 +116,16 @@ class Extension {
         }
 
         try {
-            await CSL.load()
-            const txBytes = hexToBytes(transaction.to_bytes());
+            const BufferModule = await Buffer.load()
+            const CSLModule = await CSL.load()
+            const txBytes = BufferModule.from(transaction.to_bytes());
             const witnesses = await this.cardano.signTx(txBytes.toString('hex'))
-            const signedTx = CSL.Module.Transaction.new(
+            const signedTx = CSLModule.Transaction.new(
                 transaction.body(),
-                CSL.Module.TransactionWitnessSet.from_bytes(hexToBytes(witnesses))
+                CSLModule.TransactionWitnessSet.from_bytes(BufferModule.from(witnesses, 'hex'))
             )
 
-            let signedBytes = hexToBytes(signedTx.to_bytes());
+            let signedBytes = BufferModule.from(signedTx.to_bytes());
             return await this.cardano.submitTx(signedBytes.toString('hex'))
         } catch (error: any) {
             throw error.info
@@ -186,16 +190,17 @@ class Extension {
             const utxos = await this.getUtxos()
             const outputs = await prepareTx(protocolParameters.keyDeposit, changeAddress)
             const stakeKeyHash = await this.getStakeKeyHash()
-            await CSL.load()
-            const certificates = CSL.Module.Certificates.new()
+            const CSLModule = await CSL.load()
+            const BufferModule = await Buffer.load()
+            const certificates = CSLModule.Certificates.new()
 
             if (!accountInformation.active) {
                 certificates.add(
-                    CSL.Module.Certificate.new_stake_registration(
-                        CSL.Module.StakeRegistration.new(
-                            CSL.Module.StakeCredential.from_keyhash(
-                                CSL.Module.Ed25519KeyHash.from_bytes(
-                                    hexToBytes(stakeKeyHash)
+                    CSLModule.Certificate.new_stake_registration(
+                        CSLModule.StakeRegistration.new(
+                            CSLModule.StakeCredential.from_keyhash(
+                                CSLModule.Ed25519KeyHash.from_bytes(
+                                    BufferModule.from(stakeKeyHash)
                                 )
                             )
                         )
@@ -204,15 +209,15 @@ class Extension {
             }
 
             certificates.add(
-                CSL.Module.Certificate.new_stake_delegation(
-                    CSL.Module.StakeDelegation.new(
-                        CSL.Module.StakeCredential.from_keyhash(
-                            CSL.Module.Ed25519KeyHash.from_bytes(
-                                hexToBytes(stakeKeyHash)
+                CSLModule.Certificate.new_stake_delegation(
+                    CSLModule.StakeDelegation.new(
+                        CSLModule.StakeCredential.from_keyhash(
+                            CSLModule.Ed25519KeyHash.from_bytes(
+                                BufferModule.from(stakeKeyHash)
                             )
                         ),
-                        CSL.Module.Ed25519KeyHash.from_bytes(
-                            hexToBytes(poolId)
+                        CSLModule.Ed25519KeyHash.from_bytes(
+                            BufferModule.from(poolId, 'hex')
                         )
                     )
                 )

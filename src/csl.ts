@@ -7,6 +7,8 @@ export class CSL {
         if (undefined === CSL.Module) {
             CSL.Module = await import('@emurgo/cardano-serialization-lib-browser');
         }
+
+        return CSL.Module
     }
 }
 

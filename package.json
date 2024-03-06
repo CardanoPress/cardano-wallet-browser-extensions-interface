@@ -25,6 +25,10 @@
           "types": "./dist/csl.d.ts",
           "default": "./dist/csl.js"
       },
+      "./buffer": {
+          "types": "./dist/buffer.d.ts",
+          "default": "./dist/buffer.js"
+      },
       "./config": {
           "types": "./dist/config.d.ts",
           "default": "./dist/config.js"
