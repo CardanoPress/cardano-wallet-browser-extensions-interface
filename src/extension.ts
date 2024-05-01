@@ -1,26 +1,26 @@
+import Buffer from './buffer'
 import { NETWORK } from './config'
-import { hexToBech32 } from './utils'
-import Buffer, { BufferType } from './buffer'
 import CSL, { CSLType } from './csl'
+import { hexToBech32 } from './utils'
 import { buildTx, prepareTx } from './wallet'
 
 interface Cardano {
-    getNetworkId: () => Promise<keyof typeof NETWORK>;
-    getBalance: () => Promise<string>;
-    getAddress: () => Promise<string>;
-    getChangeAddress: () => Promise<string>;
-    getRewardAddress: () => Promise<string>;
-    getRewardAddresses: () => Promise<string>;
-    getUtxos: () => Promise<string[]>;
-    signTx: (arg: string) => Promise<string>;
-    submitTx: (arg: string) => Promise<string>;
-    paymentTransaction: ({}) => Promise<any>;
-    delegationTransaction: ({}) => Promise<any>;
+    getNetworkId: () => Promise<keyof typeof NETWORK>
+    getBalance: () => Promise<string>
+    getAddress: () => Promise<string>
+    getChangeAddress: () => Promise<string>
+    getRewardAddress: () => Promise<string>
+    getRewardAddresses: () => Promise<string>
+    getUtxos: () => Promise<string[]>
+    signTx: (arg: string) => Promise<string>
+    submitTx: (arg: string) => Promise<string>
+    paymentTransaction: ({}) => Promise<any>
+    delegationTransaction: ({}) => Promise<any>
 }
 
 class Extension {
-    type: string;
-    cardano: Cardano;
+    type: string
+    cardano: Cardano
 
     constructor(type: string, cardano: Cardano) {
         this.type = type
@@ -99,9 +99,10 @@ class Extension {
         const rewardAddress = await this.getRewardAddress()
         const CSLModule = await CSL.load()
 
-        return CSLModule.RewardAddress.from_address(
-            CSLModule.Address.from_bech32(rewardAddress)
-        )?.payment_cred()?.to_keyhash()?.to_bytes()!
+        return CSLModule.RewardAddress.from_address(CSLModule.Address.from_bech32(rewardAddress))
+            ?.payment_cred()
+            ?.to_keyhash()
+            ?.to_bytes()!
     }
 
     signAndSubmit = async (transaction: CSLType.Transaction) => {
@@ -112,14 +113,14 @@ class Extension {
         try {
             const BufferModule = await Buffer.load()
             const CSLModule = await CSL.load()
-            const txBytes = BufferModule.from(transaction.to_bytes());
+            const txBytes = BufferModule.from(transaction.to_bytes())
             const witnesses = await this.cardano.signTx(txBytes.toString('hex'))
             const signedTx = CSLModule.Transaction.new(
                 transaction.body(),
                 CSLModule.TransactionWitnessSet.from_bytes(BufferModule.from(witnesses, 'hex'))
             )
 
-            let signedBytes = BufferModule.from(signedTx.to_bytes());
+            let signedBytes = BufferModule.from(signedTx.to_bytes())
             return await this.cardano.submitTx(signedBytes.toString('hex'))
         } catch (error: any) {
             throw error.info
@@ -129,10 +130,12 @@ class Extension {
     payTo = async (address: string, amount: string, protocolParameters = null) => {
         if ('Typhon' === this.type) {
             const { status, data, error, reason } = await this.cardano.paymentTransaction({
-                outputs: [{
-                    address,
-                    amount,
-                }],
+                outputs: [
+                    {
+                        address,
+                        amount,
+                    },
+                ],
             })
 
             if (status) {
@@ -193,9 +196,7 @@ class Extension {
                     CSLModule.Certificate.new_stake_registration(
                         CSLModule.StakeRegistration.new(
                             CSLModule.StakeCredential.from_keyhash(
-                                CSLModule.Ed25519KeyHash.from_bytes(
-                                    BufferModule.from(stakeKeyHash)
-                                )
+                                CSLModule.Ed25519KeyHash.from_bytes(BufferModule.from(stakeKeyHash))
                             )
                         )
                     )
@@ -206,13 +207,9 @@ class Extension {
                 CSLModule.Certificate.new_stake_delegation(
                     CSLModule.StakeDelegation.new(
                         CSLModule.StakeCredential.from_keyhash(
-                            CSLModule.Ed25519KeyHash.from_bytes(
-                                BufferModule.from(stakeKeyHash)
-                            )
+                            CSLModule.Ed25519KeyHash.from_bytes(BufferModule.from(stakeKeyHash))
                         ),
-                        CSLModule.Ed25519KeyHash.from_bytes(
-                            BufferModule.from(poolId, 'hex')
-                        )
+                        CSLModule.Ed25519KeyHash.from_bytes(BufferModule.from(poolId, 'hex'))
                     )
                 )
             )

@@ -30,7 +30,13 @@ export const prepareTx = async (lovelaceValue: string, paymentAddress: string) =
     return outputs
 }
 
-export const buildTx = async (changeAddress: string, utxos: CSLType.TransactionUnspentOutput[], outputs: CSLType.TransactionOutputs, protocolParameters: any, certificates: CSLType.Certificates | null = null) => {
+export const buildTx = async (
+    changeAddress: string,
+    utxos: CSLType.TransactionUnspentOutput[],
+    outputs: CSLType.TransactionOutputs,
+    protocolParameters: any,
+    certificates: CSLType.Certificates | null = null
+) => {
     const totalAssets = await multiAssetCount(outputs.get(0).amount().multiasset()!)
     const { default: CoinSelection } = await import('./lib/coinSelection')
 
@@ -42,11 +48,11 @@ export const buildTx = async (changeAddress: string, utxos: CSLType.TransactionU
     )
 
     let selection: {
-        input: CSLType.TransactionUnspentOutput[];
-        output: CSLType.TransactionOutput[];
-        remaining: CSLType.TransactionUnspentOutput[];
-        amount: CSLType.Value;
-        change: CSLType.Value;
+        input: CSLType.TransactionUnspentOutput[]
+        output: CSLType.TransactionOutput[]
+        remaining: CSLType.TransactionUnspentOutput[]
+        amount: CSLType.Value
+        change: CSLType.Value
     }
 
     try {
@@ -117,7 +123,9 @@ export const buildTx = async (changeAddress: string, utxos: CSLType.TransactionU
         const minAda = CSLModule.min_ada_required(partialChange, CSLModule.BigNum.from_str(protocolParameters.minUtxo))
         partialChange.set_coin(minAda)
 
-        txBuilder.add_output(CSLModule.TransactionOutput.new(CSLModule.Address.from_bech32(changeAddress), partialChange))
+        txBuilder.add_output(
+            CSLModule.TransactionOutput.new(CSLModule.Address.from_bech32(changeAddress), partialChange)
+        )
     }
 
     txBuilder.set_ttl(protocolParameters.slot + TX.invalid_hereafter)

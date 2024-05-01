@@ -1,10 +1,10 @@
 import { supportedWallets } from './config'
-import Extension from './extension'
 import CSL from './csl'
+import Extension from './extension'
 
 interface Cardano {
-    enable: () => Promise<any>;
-    isEnabled: () => Promise<boolean>;
+    enable: () => Promise<any>
+    isEnabled: () => Promise<boolean>
 }
 declare global {
     interface Window {
@@ -44,8 +44,8 @@ class Extensions {
             type = 'Eternl'
         }
 
-        if (! this.isSupported(type)) {
-            return false;
+        if (!this.isSupported(type)) {
+            return false
         }
 
         return !!window.cardano?.[type.toLowerCase()]
@@ -56,19 +56,19 @@ class Extensions {
             type = 'Eternl'
         }
 
-        if (! this.hasWallet(type)) {
-            return false;
+        if (!this.hasWallet(type)) {
+            return false
         }
 
         return window.cardano[type.toLowerCase()].isEnabled()
     }
 
     static async getWallet(type: string) {
-        if (! this.isSupported(type)) {
+        if (!this.isSupported(type)) {
             throw `Not supported wallet "${type}"`
         }
 
-        if (! this.hasWallet(type)) {
+        if (!this.hasWallet(type)) {
             throw `Not available wallet "${type}"`
         }
 
@@ -76,12 +76,12 @@ class Extensions {
         const object = `${namespace}Object`
 
         // @ts-ignore
-        if (undefined === this[object] || ! await this.isEnabled(type)) {
+        if (undefined === this[object] || !(await this.isEnabled(type))) {
             try {
                 // @ts-ignore
                 this[object] = new Extension(type, await getWalletApi(namespace))
             } catch (error: any) {
-                throw typeof error === 'string' ? error : (error.info || error.message || 'user abort connection')
+                throw typeof error === 'string' ? error : error.info || error.message || 'user abort connection'
             }
         }
 

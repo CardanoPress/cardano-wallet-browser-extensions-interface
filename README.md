@@ -8,13 +8,14 @@ A helper javascript library/package to interact with Cardano Wallets
 
 ## Supported Wallets
 
-- Nami
-- Eternl `ccvault`
-- Yoroi
-- Flint
-- Typhon
-- GeroWallet
-- NuFi
+-   Nami
+-   Eternl `ccvault`
+-   Yoroi
+-   Flint
+-   Typhon
+-   GeroWallet
+-   NuFi
+-   Lace
 
 ## Usage
 
@@ -26,7 +27,8 @@ import { adaToLovelace } from '@pbwebdev/cardano-wallet-browser-extensions-inter
 
 const amountInAda = 123
 const wantedWallet = 'Nami'
-const payeeAddress = 'addr_test1qqr585tvlc7ylnqvz8pyqwauzrdu0mxag3m7q56grgmgu7sxu2hyfhlkwuxupa9d5085eunq2qywy7hvmvej456flknswgndm3'
+const payeeAddress =
+    'addr_test1qqr585tvlc7ylnqvz8pyqwauzrdu0mxag3m7q56grgmgu7sxu2hyfhlkwuxupa9d5085eunq2qywy7hvmvej456flknswgndm3'
 const protocolParameters = {} // latest protocol parameters
 
 const Wallet = await Extensions.getWallet(wantedWallet)
@@ -34,7 +36,6 @@ const transaction = await Wallet.payTo(payeeAddress, adaToLovelace(amountInAda),
 
 console.log('Transaction Hash', transaction)
 ```
-
 
 Simple stake pool delegation
 
