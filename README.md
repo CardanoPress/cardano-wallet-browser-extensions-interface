@@ -14,7 +14,6 @@ A helper javascript library/package to interact with Cardano Wallets
 - Flint
 - Typhon
 - GeroWallet
-- Cardwallet
 - NuFi
 
 ## Usage

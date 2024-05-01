@@ -16,7 +16,6 @@ export const supportedWallets = Object.freeze([
     'Flint',
     'Typhon',
     'GeroWallet',
-    'Cardwallet',
     'NuFi',
     'Lace',
 ])
