@@ -19,3 +19,18 @@ export const supportedWallets = Object.freeze([
     'NuFi',
     'Lace',
 ])
+
+export type ProtocolParameters = {
+    minUtxo: string
+    minFeeA: number
+    minFeeB: number
+    maxTxSize: number
+    maxValSize: number
+    keyDeposit: string
+    poolDeposit: string
+    slot: number
+}
+
+export type AccountInformation = {
+    active: boolean
+}

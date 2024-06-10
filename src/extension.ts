@@ -1,5 +1,5 @@
 import Buffer from './buffer'
-import { NETWORK } from './config'
+import { AccountInformation, NETWORK, ProtocolParameters } from './config'
 import CSL, { CSLType } from './csl'
 import { hexToBech32 } from './utils'
 import { buildTx, prepareTx } from './wallet'
@@ -127,7 +127,7 @@ class Extension {
         }
     }
 
-    payTo = async (address: string, amount: string, protocolParameters = null) => {
+    payTo = async (address: string, amount: string, protocolParameters: ProtocolParameters | null = null) => {
         if ('Typhon' === this.type) {
             const { status, data, error, reason } = await this.cardano.paymentTransaction({
                 outputs: [
@@ -161,7 +161,11 @@ class Extension {
         }
     }
 
-    delegateTo = async (poolId: string, protocolParameters: any = null, accountInformation: any = null) => {
+    delegateTo = async (
+        poolId: string,
+        protocolParameters: ProtocolParameters | null = null,
+        accountInformation: AccountInformation | null = null
+    ) => {
         if ('Typhon' === this.type) {
             const { status, data, error, reason } = await this.cardano.delegationTransaction({
                 poolId,

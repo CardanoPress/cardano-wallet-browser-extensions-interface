@@ -1,4 +1,4 @@
-import { TX } from './config'
+import { ProtocolParameters, TX } from './config'
 import CSL, { CSLType } from './csl'
 
 const multiAssetCount = async (multiAsset: CSLType.MultiAsset) => {
@@ -34,7 +34,7 @@ export const buildTx = async (
     changeAddress: string,
     utxos: CSLType.TransactionUnspentOutput[],
     outputs: CSLType.TransactionOutputs,
-    protocolParameters: any,
+    protocolParameters: ProtocolParameters,
     certificates: CSLType.Certificates | null = null
 ) => {
     const totalAssets = await multiAssetCount(outputs.get(0).amount().multiasset()!)
