@@ -161,6 +161,52 @@ class Extension {
         }
     }
 
+    multiSend = async (
+        outputs: {
+            address: string
+            amount: string
+        }[],
+        protocolParameters: ProtocolParameters | null = null
+    ) => {
+        if ('Typhon' === this.type) {
+            const { status, data, error, reason } = await this.cardano.paymentTransaction({
+                outputs,
+            })
+
+            if (status) {
+                return data.transactionId as string
+            }
+
+            throw error ?? reason
+        }
+
+        if (!protocolParameters) {
+            throw 'Required protocol parameters'
+        }
+
+        try {
+            const changeAddress = await this.getChangeAddress()
+            const utxos = await this.getUtxos()
+            const CSLModule = await CSL.load()
+            const txOutputs = CSLModule.TransactionOutputs.new()
+
+            outputs.forEach((output) => {
+                txOutputs.add(
+                    CSLModule.TransactionOutput.new(
+                        CSLModule.Address.from_bech32(output.address),
+                        CSLModule.Value.new(CSLModule.BigNum.from_str(output.amount))
+                    )
+                )
+            })
+
+            const transaction = await buildTx(changeAddress, utxos, txOutputs, protocolParameters)
+
+            return await this.signAndSubmit(transaction)
+        } catch (error) {
+            throw error
+        }
+    }
+
     delegateTo = async (
         poolId: string,
         protocolParameters: ProtocolParameters | null = null,

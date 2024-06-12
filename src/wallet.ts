@@ -84,7 +84,9 @@ export const buildTx = async (
         txBuilder.add_input(utxo.output().address(), utxo.input(), utxo.output().amount())
     }
 
-    txBuilder.add_output(outputs.get(0))
+    for (let i = 0; i < outputs.len(); i++) {
+        txBuilder.add_output(outputs.get(i))
+    }
 
     const change = selection.change
     const changeMultiAssets = change.multiasset()
