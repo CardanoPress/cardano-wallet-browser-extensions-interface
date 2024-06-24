@@ -18,6 +18,7 @@ export const supportedWallets = Object.freeze([
     'GeroWallet',
     'NuFi',
     'Lace',
+    'Begin',
 ])
 
 export type ProtocolParameters = {
