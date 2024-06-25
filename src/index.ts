@@ -5,6 +5,9 @@ import Extension from './extension'
 interface Cardano {
     enable: () => Promise<any>
     isEnabled: () => Promise<boolean>
+    experimental?: {
+        vespr_compat: boolean
+    }
 }
 declare global {
     interface Window {
@@ -36,7 +39,17 @@ class Extensions {
             type = 'Eternl'
         }
 
+        if ('VESPR' === type) {
+            return true
+        }
+
         return supportedWallets.includes(type)
+    }
+
+    static fromVespr() {
+        return Object.keys(window.cardano).filter(wallet => {
+            return window.cardano[wallet]?.experimental?.vespr_compat
+        })
     }
 
     static hasWallet(type: string) {
