@@ -53,10 +53,6 @@ class Extensions {
     }
 
     static hasWallet(type: string) {
-        if ('ccvault' === type) {
-            type = 'Eternl'
-        }
-
         if (!this.isSupported(type)) {
             return false
         }
@@ -65,10 +61,6 @@ class Extensions {
     }
 
     static async isEnabled(type: string) {
-        if ('ccvault' === type) {
-            type = 'Eternl'
-        }
-
         if (!this.hasWallet(type)) {
             return false
         }
