@@ -31,6 +31,10 @@ const getWalletApi = async (namespace: string) => {
     return response
 }
 
+const fromVespr = (type: string) => {
+    return window.cardano[type.toLowerCase()]?.experimental?.vespr_compat || false
+}
+
 class Extensions {
     static supported = supportedWallets
 
@@ -47,9 +51,7 @@ class Extensions {
     }
 
     static fromVespr() {
-        return Object.keys(window.cardano).filter(wallet => {
-            return window.cardano[wallet]?.experimental?.vespr_compat
-        })
+        return supportedWallets.filter(fromVespr)
     }
 
     static hasWallet(type: string) {
@@ -96,4 +98,4 @@ class Extensions {
 }
 
 export default Extensions
-export { CSL }
+export { CSL, fromVespr }
