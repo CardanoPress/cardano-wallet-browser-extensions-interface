@@ -39,10 +39,6 @@ class Extensions {
     static supported = supportedWallets
 
     static isSupported(type: string) {
-        if ('ccvault' === type) {
-            type = 'Eternl'
-        }
-
         if ('VESPR' === type) {
             return true
         }

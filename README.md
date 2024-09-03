@@ -9,13 +9,14 @@ A helper javascript library/package to interact with Cardano Wallets
 ## Supported Wallets
 
 -   Nami
--   Eternl `ccvault`
+-   Eternl
 -   Yoroi
 -   Flint
 -   Typhon
 -   GeroWallet
 -   NuFi
 -   Lace
+-   Begin
 
 ## Usage
 
