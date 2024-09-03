@@ -28,10 +28,6 @@ class Extension {
     }
 
     getNetwork = async () => {
-        if ('Yoroi' === this.type) {
-            return NETWORK[1]
-        }
-
         let id = await this.cardano.getNetworkId()
 
         if ('Typhon' === this.type) {
