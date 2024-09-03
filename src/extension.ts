@@ -1,7 +1,7 @@
 import Buffer from './buffer'
 import { AccountInformation, NETWORK, ProtocolParameters } from './config'
 import CSL, { CSLType } from './csl'
-import { hexToBech32 } from './utils'
+import { hexEncode, hexToBech32 } from './utils'
 import { buildTx, prepareTx } from './wallet'
 
 interface Cardano {
@@ -16,6 +16,7 @@ interface Cardano {
     submitTx: (arg: string) => Promise<string>
     paymentTransaction: ({}) => Promise<any>
     delegationTransaction: ({}) => Promise<any>
+    signData: (a: any, b?: any) => Promise<any>
 }
 
 class Extension {
@@ -99,6 +100,18 @@ class Extension {
             ?.payment_cred()
             ?.to_keyhash()
             ?.to_bytes()!
+    }
+
+    signData = async (message: string) => {
+        const address = await this.getChangeAddress()
+        const data = hexEncode(message)
+        let api = this.cardano
+
+        if ('Typhon' === this.type) {
+            api = await window.cardano.typhoncip30.enable()
+        }
+
+        return api.signData(address, data)
     }
 
     signAndSubmit = async (transaction: CSLType.Transaction) => {
