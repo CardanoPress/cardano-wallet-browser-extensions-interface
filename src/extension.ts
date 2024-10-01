@@ -103,7 +103,6 @@ class Extension {
     }
 
     signData = async (message: string) => {
-        const address = await this.getChangeAddress()
         const data = hexEncode(message)
         let api = this.cardano
 
@@ -111,7 +110,7 @@ class Extension {
             api = await window.cardano.typhoncip30.enable()
         }
 
-        return api.signData(address, data)
+        return api.signData(await api.getChangeAddress(), data)
     }
 
     signAndSubmit = async (transaction: CSLType.Transaction) => {
