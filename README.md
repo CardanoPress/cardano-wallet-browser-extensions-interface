@@ -11,7 +11,6 @@ A helper javascript library/package to interact with Cardano Wallets
 -   Nami
 -   Eternl
 -   Yoroi
--   Flint
 -   Typhon
 -   GeroWallet
 -   NuFi

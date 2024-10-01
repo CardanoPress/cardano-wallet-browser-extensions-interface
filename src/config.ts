@@ -13,7 +13,6 @@ export const supportedWallets = Object.freeze([
     'Nami',
     'Eternl', // ccvault
     'Yoroi',
-    'Flint',
     'Typhon',
     'GeroWallet',
     'NuFi',
