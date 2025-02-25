@@ -8,7 +8,6 @@ A helper javascript library/package to interact with Cardano Wallets
 
 ## Supported Wallets
 
--   Nami
 -   Eternl
 -   Yoroi
 -   Typhon
