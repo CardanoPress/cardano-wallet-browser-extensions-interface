@@ -1,21 +1,6 @@
 import { ProtocolParameters, TX } from './config'
 import CSL, { CSLType } from './csl'
 
-const multiAssetCount = async (multiAsset: CSLType.MultiAsset) => {
-    if (!multiAsset) return 0
-    let count = 0
-    const policies = multiAsset.keys()
-    for (let j = 0; j < multiAsset.len(); j++) {
-        const policy = policies.get(j)
-        const policyAssets = multiAsset.get(policy)
-        const assetNames = policyAssets?.keys()!
-        for (let k = 0; k < assetNames.len(); k++) {
-            count++
-        }
-    }
-    return count
-}
-
 export const prepareTx = async (lovelaceValue: string, paymentAddress: string) => {
     const CSLModule = await CSL.load()
     const outputs = CSLModule.TransactionOutputs.new()
@@ -45,7 +30,7 @@ export const buildTx = async (
                 CSLModule.BigNum.from_str(protocolParameters.minFeeB.toString())
             )
         )
-        .coins_per_utxo_word(CSLModule.BigNum.from_str(protocolParameters.coinsPerUtxoWord))
+        .coins_per_utxo_byte(CSLModule.BigNum.from_str(protocolParameters.coinsPerUtxoSize))
         .pool_deposit(CSLModule.BigNum.from_str(protocolParameters.poolDeposit))
         .key_deposit(CSLModule.BigNum.from_str(protocolParameters.keyDeposit))
         .max_value_size(protocolParameters.maxValSize)
@@ -62,9 +47,9 @@ export const buildTx = async (
 
     utxos.forEach((u) => UTxOs.add(u))
 
-    txBuilder.add_inputs_from(UTxOs, CSLModule.CoinSelectionStrategyCIP2.RandomImprove)
     txBuilder.add_output(outputs.get(0))
     txBuilder.set_ttl(protocolParameters.slot + TX.invalid_hereafter)
+    txBuilder.add_inputs_from(UTxOs, CSLModule.CoinSelectionStrategyCIP2.RandomImproveMultiAsset)
     txBuilder.add_change_if_needed(CSLModule.Address.from_bech32(changeAddress))
 
     const transaction = CSLModule.Transaction.new(txBuilder.build(), CSLModule.TransactionWitnessSet.new())

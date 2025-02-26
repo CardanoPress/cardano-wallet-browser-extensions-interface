@@ -53,7 +53,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.26.9",
-    "@emurgo/cardano-serialization-lib-browser": "11.3.1",
+    "@emurgo/cardano-serialization-lib-browser": "^14.1.1",
     "buffer": "^6.0.3"
   },
   "scripts": {

@@ -253,7 +253,7 @@ class Extension {
                 certificates.add(
                     CSLModule.Certificate.new_stake_registration(
                         CSLModule.StakeRegistration.new(
-                            CSLModule.StakeCredential.from_keyhash(
+                            CSLModule.Credential.from_keyhash(
                                 CSLModule.Ed25519KeyHash.from_bytes(BufferModule.from(stakeKeyHash))
                             )
                         )
@@ -264,7 +264,7 @@ class Extension {
             certificates.add(
                 CSLModule.Certificate.new_stake_delegation(
                     CSLModule.StakeDelegation.new(
-                        CSLModule.StakeCredential.from_keyhash(
+                        CSLModule.Credential.from_keyhash(
                             CSLModule.Ed25519KeyHash.from_bytes(BufferModule.from(stakeKeyHash))
                         ),
                         CSLModule.Ed25519KeyHash.from_bytes(BufferModule.from(poolId, 'hex'))
