@@ -27,6 +27,7 @@ export type ProtocolParameters = {
     maxValSize: number
     keyDeposit: string
     poolDeposit: string
+    coinsPerUtxoWord: string
     slot: number
 }
 
