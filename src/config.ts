@@ -20,7 +20,6 @@ export const supportedWallets = Object.freeze([
 ])
 
 export type ProtocolParameters = {
-    minUtxo: string
     minFeeA: number
     minFeeB: number
     maxTxSize: number

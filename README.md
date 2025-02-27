@@ -25,7 +25,7 @@ import Extensions from '@pbwebdev/cardano-wallet-browser-extensions-interface'
 import { adaToLovelace } from '@pbwebdev/cardano-wallet-browser-extensions-interface/utils'
 
 const amountInAda = 123
-const wantedWallet = 'Nami'
+const wantedWallet = 'Lace'
 const payeeAddress =
     'addr_test1qqr585tvlc7ylnqvz8pyqwauzrdu0mxag3m7q56grgmgu7sxu2hyfhlkwuxupa9d5085eunq2qywy7hvmvej456flknswgndm3'
 const protocolParameters = {} // latest protocol parameters
