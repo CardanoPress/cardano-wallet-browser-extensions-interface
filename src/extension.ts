@@ -74,11 +74,7 @@ class Extension {
 
     signData = async (message: string) => {
         const data = hexEncode(message)
-        let api = this.cardano
-
-        if ('Typhon' === this.type) {
-            api = await window.cardano.typhoncip30.enable()
-        }
+        const api = this.cardano
 
         return api.signData(await api.getChangeAddress(), data)
     }
@@ -101,11 +97,7 @@ class Extension {
         }
     }
 
-    payTo = async (address: string, amount: string, protocolParameters: ProtocolParameters | null = null) => {
-        if (!protocolParameters) {
-            throw 'Required protocol parameters'
-        }
-
+    payTo = async (address: string, amount: string, protocolParameters: ProtocolParameters) => {
         try {
             const changeAddress = await this.getChangeAddress()
             const utxos = await this.getUtxos()
@@ -123,12 +115,8 @@ class Extension {
             address: string
             amount: string
         }[],
-        protocolParameters: ProtocolParameters | null = null
+        protocolParameters: ProtocolParameters
     ) => {
-        if (!protocolParameters) {
-            throw 'Required protocol parameters'
-        }
-
         try {
             const changeAddress = await this.getChangeAddress()
             const utxos = await this.getUtxos()
@@ -154,17 +142,9 @@ class Extension {
 
     delegateTo = async (
         poolId: string,
-        protocolParameters: ProtocolParameters | null = null,
-        accountInformation: AccountInformation | null = null
+        protocolParameters: ProtocolParameters,
+        accountInformation: AccountInformation
     ) => {
-        if (!protocolParameters) {
-            throw 'Required protocol parameters'
-        }
-
-        if (!accountInformation) {
-            throw 'Required account information'
-        }
-
         try {
             const changeAddress = await this.getChangeAddress()
             const utxos = await this.getUtxos()
