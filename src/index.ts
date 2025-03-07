@@ -11,24 +11,16 @@ interface Cardano {
 }
 declare global {
     interface Window {
-        cardano: {
-            typhon: Promise<any>
-        } & Record<string, Cardano>
+        cardano: Record<string, Cardano>
     }
 }
 
 const getWalletApi = async (namespace: string) => {
-    const response = await window.cardano[namespace].enable()
-
     if ('typhon' === namespace) {
-        if (false === response.status) {
-            throw response?.error ?? response.reason
-        }
-
-        return await window.cardano[namespace]
+        namespace = 'typhoncip30'
     }
 
-    return response
+    return await window.cardano[namespace].enable()
 }
 
 const fromVespr = (type: string) => {

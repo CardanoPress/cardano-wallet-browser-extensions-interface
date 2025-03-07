@@ -31,22 +31,10 @@ class Extension {
     getNetwork = async () => {
         let id = await this.cardano.getNetworkId()
 
-        if ('Typhon' === this.type) {
-            // @ts-ignore
-            id = id.data
-        }
-
         return NETWORK[id]
     }
 
     getBalance = async () => {
-        if ('Typhon' === this.type) {
-            const response = await this.cardano.getBalance()
-
-            // @ts-ignore
-            return response.data.ada as string
-        }
-
         const balance = await this.cardano.getBalance()
         const CSLModule = await CSL.load()
         const BufferModule = await Buffer.load()
@@ -55,36 +43,18 @@ class Extension {
     }
 
     getChangeAddress = async () => {
-        if ('Typhon' === this.type) {
-            const response = await this.cardano.getAddress()
-
-            // @ts-ignore
-            return response.data as string
-        }
-
         const changeAddress = await this.cardano.getChangeAddress()
 
         return await hexToBech32(changeAddress)
     }
 
     getRewardAddress = async () => {
-        if ('Typhon' === this.type) {
-            const response = await this.cardano.getRewardAddress()
-
-            // @ts-ignore
-            return response.data as string
-        }
-
         const rewardAddress = await this.cardano.getRewardAddresses()
 
         return await hexToBech32(rewardAddress[0])
     }
 
     getUtxos = async () => {
-        if ('Typhon' === this.type) {
-            return []
-        }
-
         const rawUtxos = await this.cardano.getUtxos()
         const CSLModule = await CSL.load()
         const BufferModule = await Buffer.load()
@@ -114,10 +84,6 @@ class Extension {
     }
 
     signAndSubmit = async (transaction: CSLType.Transaction) => {
-        if ('Typhon' === this.type) {
-            throw 'No implementation from the extension'
-        }
-
         try {
             const BufferModule = await Buffer.load()
             const CSLModule = await CSL.load()
@@ -136,23 +102,6 @@ class Extension {
     }
 
     payTo = async (address: string, amount: string, protocolParameters: ProtocolParameters | null = null) => {
-        if ('Typhon' === this.type) {
-            const { status, data, error, reason } = await this.cardano.paymentTransaction({
-                outputs: [
-                    {
-                        address,
-                        amount,
-                    },
-                ],
-            })
-
-            if (status) {
-                return data.transactionId as string
-            }
-
-            throw error ?? reason
-        }
-
         if (!protocolParameters) {
             throw 'Required protocol parameters'
         }
@@ -176,18 +125,6 @@ class Extension {
         }[],
         protocolParameters: ProtocolParameters | null = null
     ) => {
-        if ('Typhon' === this.type) {
-            const { status, data, error, reason } = await this.cardano.paymentTransaction({
-                outputs,
-            })
-
-            if (status) {
-                return data.transactionId as string
-            }
-
-            throw error ?? reason
-        }
-
         if (!protocolParameters) {
             throw 'Required protocol parameters'
         }
@@ -220,18 +157,6 @@ class Extension {
         protocolParameters: ProtocolParameters | null = null,
         accountInformation: AccountInformation | null = null
     ) => {
-        if ('Typhon' === this.type) {
-            const { status, data, error, reason } = await this.cardano.delegationTransaction({
-                poolId,
-            })
-
-            if (status) {
-                return data.transactionId as string
-            }
-
-            throw error ?? reason
-        }
-
         if (!protocolParameters) {
             throw 'Required protocol parameters'
         }
