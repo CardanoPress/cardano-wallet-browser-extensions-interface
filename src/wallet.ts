@@ -47,7 +47,10 @@ export const buildTx = async (
 
     utxos.forEach((u) => UTxOs.add(u))
 
-    txBuilder.add_output(outputs.get(0))
+    for (let i = 0; i < outputs.len(); i++) {
+        txBuilder.add_output(outputs.get(i))
+    }
+
     txBuilder.set_ttl(protocolParameters.slot + TX.invalid_hereafter)
     txBuilder.add_inputs_from(UTxOs, CSLModule.CoinSelectionStrategyCIP2.RandomImproveMultiAsset)
     txBuilder.add_change_if_needed(CSLModule.Address.from_bech32(changeAddress))
