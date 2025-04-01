@@ -1,10 +1,12 @@
 import { OutputData, ProtocolParameters, TX } from './config'
 import CSL, { CSLType } from './csl'
 
-export const prepareTx = async (outputData: OutputData) => {
+export const prepareTx = async (outputData: OutputData, utxos: CSLType.TransactionUnspentOutput[]) => {
     const CSLModule = await CSL.load()
+    const inputs = CSLModule.TransactionUnspentOutputs.new()
     const outputs = CSLModule.TransactionOutputs.new()
 
+    utxos.forEach((u) => inputs.add(u))
     outputData.forEach((output) => {
         outputs.add(
             CSLModule.TransactionOutput.new(
@@ -14,12 +16,12 @@ export const prepareTx = async (outputData: OutputData) => {
         )
     })
 
-    return outputs
+    return { inputs, outputs }
 }
 
 export const buildTx = async (
     changeAddress: string,
-    utxos: CSLType.TransactionUnspentOutput[],
+    inputs: CSLType.TransactionUnspentOutputs,
     outputs: CSLType.TransactionOutputs,
     protocolParameters: ProtocolParameters,
     certificates: CSLType.Certificates | null = null
@@ -45,16 +47,12 @@ export const buildTx = async (
         txBuilder.set_certs(certificates)
     }
 
-    const UTxOs = CSLModule.TransactionUnspentOutputs.new()
-
-    utxos.forEach((u) => UTxOs.add(u))
-
     for (let i = 0; i < outputs.len(); i++) {
         txBuilder.add_output(outputs.get(i))
     }
 
     txBuilder.set_ttl(protocolParameters.slot + TX.invalid_hereafter)
-    txBuilder.add_inputs_from(UTxOs, CSLModule.CoinSelectionStrategyCIP2.RandomImproveMultiAsset)
+    txBuilder.add_inputs_from(inputs, CSLModule.CoinSelectionStrategyCIP2.RandomImproveMultiAsset)
     txBuilder.add_change_if_needed(CSLModule.Address.from_bech32(changeAddress))
 
     const transaction = CSLModule.Transaction.new(txBuilder.build(), CSLModule.TransactionWitnessSet.new())

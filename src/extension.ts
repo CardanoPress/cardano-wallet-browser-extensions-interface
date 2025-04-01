@@ -117,8 +117,8 @@ class Extension {
         try {
             const changeAddress = await this.getChangeAddress()
             const utxos = await this.getUtxos()
-            const txOutputs = await prepareTx(outputData)
-            const transaction = await buildTx(changeAddress, utxos, txOutputs, protocolParameters)
+            const { inputs, outputs } = await prepareTx(outputData, utxos)
+            const transaction = await buildTx(changeAddress, inputs, outputs, protocolParameters)
 
             return await this.signAndSubmit(transaction)
         } catch (error) {
@@ -134,7 +134,7 @@ class Extension {
         try {
             const changeAddress = await this.getChangeAddress()
             const utxos = await this.getUtxos()
-            const outputs = await prepareTx([{ address: changeAddress, amount: protocolParameters.keyDeposit }])
+            const { inputs, outputs } = await prepareTx([{ address: changeAddress, amount: protocolParameters.keyDeposit }], utxos)
             const stakeKeyHash = await this.getStakeKeyHash()
             const CSLModule = await CSL.load()
             const BufferModule = await Buffer.load()
@@ -163,7 +163,7 @@ class Extension {
                 )
             )
 
-            const transaction = await buildTx(changeAddress, utxos, outputs, protocolParameters, certificates)
+            const transaction = await buildTx(changeAddress, inputs, outputs, protocolParameters, certificates)
 
             return await this.signAndSubmit(transaction)
         } catch (error) {
