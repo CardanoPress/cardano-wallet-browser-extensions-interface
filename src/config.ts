@@ -33,3 +33,8 @@ export type ProtocolParameters = {
 export type AccountInformation = {
     active: boolean
 }
+
+export type OutputData = {
+    address: string
+    amount: string
+}[]

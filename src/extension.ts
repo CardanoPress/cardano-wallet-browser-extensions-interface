@@ -1,5 +1,5 @@
 import Buffer from './buffer'
-import { AccountInformation, NETWORK, ProtocolParameters } from './config'
+import { AccountInformation, NETWORK, OutputData, ProtocolParameters } from './config'
 import CSL, { CSLType } from './csl'
 import { hexEncode, hexToBech32 } from './utils'
 import { buildTx, prepareTx } from './wallet'
@@ -101,7 +101,7 @@ class Extension {
         try {
             const changeAddress = await this.getChangeAddress()
             const utxos = await this.getUtxos()
-            const outputs = await prepareTx(amount, address)
+            const outputs = await prepareTx([{ address, amount }])
             const transaction = await buildTx(changeAddress, utxos, outputs, protocolParameters)
 
             return await this.signAndSubmit(transaction)
@@ -111,27 +111,13 @@ class Extension {
     }
 
     multiSend = async (
-        outputs: {
-            address: string
-            amount: string
-        }[],
+        outputData: OutputData,
         protocolParameters: ProtocolParameters
     ) => {
         try {
             const changeAddress = await this.getChangeAddress()
             const utxos = await this.getUtxos()
-            const CSLModule = await CSL.load()
-            const txOutputs = CSLModule.TransactionOutputs.new()
-
-            outputs.forEach((output) => {
-                txOutputs.add(
-                    CSLModule.TransactionOutput.new(
-                        CSLModule.Address.from_bech32(output.address),
-                        CSLModule.Value.new(CSLModule.BigNum.from_str(output.amount))
-                    )
-                )
-            })
-
+            const txOutputs = await prepareTx(outputData)
             const transaction = await buildTx(changeAddress, utxos, txOutputs, protocolParameters)
 
             return await this.signAndSubmit(transaction)
@@ -148,7 +134,7 @@ class Extension {
         try {
             const changeAddress = await this.getChangeAddress()
             const utxos = await this.getUtxos()
-            const outputs = await prepareTx(protocolParameters.keyDeposit, changeAddress)
+            const outputs = await prepareTx([{ address: changeAddress, amount: protocolParameters.keyDeposit }])
             const stakeKeyHash = await this.getStakeKeyHash()
             const CSLModule = await CSL.load()
             const BufferModule = await Buffer.load()

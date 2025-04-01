@@ -1,16 +1,18 @@
-import { ProtocolParameters, TX } from './config'
+import { OutputData, ProtocolParameters, TX } from './config'
 import CSL, { CSLType } from './csl'
 
-export const prepareTx = async (lovelaceValue: string, paymentAddress: string) => {
+export const prepareTx = async (outputData: OutputData) => {
     const CSLModule = await CSL.load()
     const outputs = CSLModule.TransactionOutputs.new()
 
-    outputs.add(
-        CSLModule.TransactionOutput.new(
-            CSLModule.Address.from_bech32(paymentAddress),
-            CSLModule.Value.new(CSLModule.BigNum.from_str(lovelaceValue))
+    outputData.forEach((output) => {
+        outputs.add(
+            CSLModule.TransactionOutput.new(
+                CSLModule.Address.from_bech32(output.address),
+                CSLModule.Value.new(CSLModule.BigNum.from_str(output.amount))
+            )
         )
-    )
+    })
 
     return outputs
 }
