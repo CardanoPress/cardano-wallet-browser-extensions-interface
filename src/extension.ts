@@ -98,16 +98,7 @@ class Extension {
     }
 
     payTo = async (address: string, amount: string, protocolParameters: ProtocolParameters) => {
-        try {
-            const changeAddress = await this.getChangeAddress()
-            const utxos = await this.getUtxos()
-            const outputs = await prepareTx([{ address, amount }])
-            const transaction = await buildTx(changeAddress, utxos, outputs, protocolParameters)
-
-            return await this.signAndSubmit(transaction)
-        } catch (error) {
-            throw error
-        }
+        return this.multiSend([{ address, amount }], protocolParameters)
     }
 
     multiSend = async (

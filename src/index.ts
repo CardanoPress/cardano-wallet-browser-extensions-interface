@@ -1,5 +1,4 @@
 import { supportedWallets } from './config'
-import CSL from './csl'
 import Extension from './extension'
 
 interface Cardano {
@@ -23,11 +22,11 @@ const getWalletApi = async (namespace: string) => {
     return await window.cardano[namespace].enable()
 }
 
-const fromVespr = (type: string) => {
+export const fromVespr = (type: string) => {
     return window.cardano[type.toLowerCase()]?.experimental?.vespr_compat || false
 }
 
-class Extensions {
+export default class Extensions {
     static supported = supportedWallets
 
     static isSupported(type: string) {
@@ -84,6 +83,3 @@ class Extensions {
         return Object.freeze(this[object])
     }
 }
-
-export default Extensions
-export { CSL, fromVespr }
