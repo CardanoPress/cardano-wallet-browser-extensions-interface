@@ -1,0 +1,34 @@
+name: Create Tag
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+env:
+  PATTERN: '[0-9]+\.[0-9]+\.[0-9]+'
+
+jobs:
+  create:
+    if: ${{ startsWith( github.event.head_commit.message, 'bump version to ' ) }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.WF_TOKEN }}
+
+      - name: Tag new version
+        shell: bash
+        run: |
+          MESSAGE="${{ github.event.head_commit.message }}"
+          VERSION="$(echo $MESSAGE | grep -oE $PATTERN)"
+
+          echo "Tagging version $VERSION"
+
+          git tag "v$VERSION"
+          git push --tags

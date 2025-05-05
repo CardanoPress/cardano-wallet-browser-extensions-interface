@@ -12,6 +12,11 @@
     "email": "mail@pbwebdev.com",
     "homepage": "https://pbwebdev.com"
   },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=10"
+  },
+  "packageManager": "pnpm@10.8.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -56,7 +61,7 @@
     "buffer": "^6.0.3"
   },
   "scripts": {
-    "prepublishOnly": "npm run clean && npm run build",
+    "prepublishOnly": "pnpm clean && pnpm build",
     "clean": "rm -rf ./dist",
     "watch": "tsc --watch",
     "build": "tsc"
