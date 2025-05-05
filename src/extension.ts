@@ -101,14 +101,11 @@ class Extension {
         return this.multiSend([{ address, amount }], protocolParameters)
     }
 
-    multiSend = async (
-        outputData: OutputData,
-        protocolParameters: ProtocolParameters
-    ) => {
+    multiSend = async (outputData: OutputData, protocolParameters: ProtocolParameters) => {
         try {
             const changeAddress = await this.getChangeAddress()
             const utxos = await this.getUtxos()
-            const { inputs, outputs } = await prepareTx(outputData, utxos)
+            const { inputs, outputs } = await prepareTx(utxos, outputData)
             const transaction = await buildTx(changeAddress, inputs, outputs, protocolParameters)
 
             return await this.signAndSubmit(transaction)
@@ -125,7 +122,9 @@ class Extension {
         try {
             const changeAddress = await this.getChangeAddress()
             const utxos = await this.getUtxos()
-            const { inputs, outputs } = await prepareTx([{ address: changeAddress, amount: protocolParameters.keyDeposit }], utxos)
+            const { inputs, outputs } = await prepareTx(utxos, [
+                { address: changeAddress, amount: protocolParameters.keyDeposit },
+            ])
             const stakeKeyHash = await this.getStakeKeyHash()
             const CSLModule = await CSL.load()
             const BufferModule = await Buffer.load()

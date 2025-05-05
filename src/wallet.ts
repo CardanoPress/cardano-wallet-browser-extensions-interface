@@ -1,20 +1,23 @@
 import { OutputData, ProtocolParameters, TX } from './config'
 import CSL, { CSLType } from './csl'
 
-export const prepareTx = async (outputData: OutputData, utxos: CSLType.TransactionUnspentOutput[]) => {
+export const prepareTx = async (utxos: CSLType.TransactionUnspentOutput[], outputData?: OutputData) => {
     const CSLModule = await CSL.load()
     const inputs = CSLModule.TransactionUnspentOutputs.new()
     const outputs = CSLModule.TransactionOutputs.new()
 
     utxos.forEach((u) => inputs.add(u))
-    outputData.forEach((output) => {
-        outputs.add(
-            CSLModule.TransactionOutput.new(
-                CSLModule.Address.from_bech32(output.address),
-                CSLModule.Value.new(CSLModule.BigNum.from_str(output.amount))
+
+    if (outputData) {
+        outputData.forEach((output) => {
+            outputs.add(
+                CSLModule.TransactionOutput.new(
+                    CSLModule.Address.from_bech32(output.address),
+                    CSLModule.Value.new(CSLModule.BigNum.from_str(output.amount))
+                )
             )
-        )
-    })
+        })
+    }
 
     return { inputs, outputs }
 }
