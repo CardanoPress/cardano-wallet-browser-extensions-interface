@@ -1,6 +1,6 @@
 {
   "name": "@pbwebdev/cardano-wallet-browser-extensions-interface",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Helper library to interact with Cardano Wallets",
   "keywords": [
     "cardano",
@@ -11,6 +11,10 @@
     "name": "Gene Alyson Fortunado Torcende",
     "email": "mail@pbwebdev.com",
     "homepage": "https://pbwebdev.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pbwebdev/cardano-wallet-browser-extensions-interface.git"
   },
   "engines": {
     "node": ">=20",
@@ -52,10 +56,6 @@
       "default": "./dist/wallet.js"
     }
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/pbwebdev/cardano-wallet-browser-extensions-interface.git"
-  },
   "dependencies": {
     "@emurgo/cardano-serialization-lib-browser": "^14.1.1",
     "buffer": "^6.0.3"
@@ -67,6 +67,6 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   }
 }
