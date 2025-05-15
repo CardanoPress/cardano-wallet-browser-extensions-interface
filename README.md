@@ -15,6 +15,7 @@ A helper javascript library/package to interact with Cardano Wallets
 -   NuFi
 -   Lace
 -   Begin
+-   VESPR
 
 ## Usage
 

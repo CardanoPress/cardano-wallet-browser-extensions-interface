@@ -30,10 +30,6 @@ export default class Extensions {
     static supported = supportedWallets
 
     static isSupported(type: string) {
-        if ('VESPR' === type) {
-            return true
-        }
-
         return supportedWallets.includes(type)
     }
 
